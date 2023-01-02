@@ -1,0 +1,28 @@
+{% extends 'Core/base.html' %}
+
+{% block title %}
+    Create Profile
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Create Profile</h3>
+                    </div>
+                    <div class="panel-body text-center">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group {% if form.errors %}has-error{% endif %}">
+                                {{ form.as_p }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
