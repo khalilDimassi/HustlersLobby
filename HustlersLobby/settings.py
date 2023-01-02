@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     # My Apps
     'CoreApp.apps.CoreappConfig',
     'GeneralAuth.apps.GeneralauthConfig',
+    'Clients.apps.ClientsConfig',
+    'Hustlers.apps.HustlersConfig',
 
     # Third Party Apps
     'crispy_forms',
