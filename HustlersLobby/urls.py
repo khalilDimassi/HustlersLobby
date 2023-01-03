@@ -8,7 +8,7 @@ urlpatterns = [
     path('', include('CoreApp.urls')),
     path('accounts/', include('GeneralAuth.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    # path('contenttypes/', include('django.contrib.contenttypes.urls')),
+    # path('contenttypes/', include('django.contrib.contenttypes.urls')),  # This is for the admin site
     path('client/', include('Clients.urls', namespace='client')),
     path('hustler/', include('Hustlers.urls',  namespace='hustler')),
 

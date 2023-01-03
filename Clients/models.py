@@ -16,13 +16,13 @@ class ClientProfile(models.Model):
     bio = models.TextField(max_length=500, null=True, blank=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
 
-    fb_link = models.URLField(max_length=200, null=True, blank=True)
-    tw_link = models.URLField(max_length=200, null=True, blank=True)
-    gh_link = models.URLField(max_length=200, null=True, blank=True)
-    li_link = models.URLField(max_length=200, null=True, blank=True)
-    ig_link = models.URLField(max_length=200, null=True, blank=True)
-    pi_link = models.URLField(max_length=200, null=True, blank=True)
-    pp_link = models.URLField(max_length=200, null=True, blank=True)
+    fb_link = models.CharField(max_length=200, null=True, blank=True)
+    tw_link = models.CharField(max_length=200, null=True, blank=True)
+    gh_link = models.CharField(max_length=200, null=True, blank=True)
+    li_link = models.CharField(max_length=200, null=True, blank=True)
+    ig_link = models.CharField(max_length=200, null=True, blank=True)
+    pi_link = models.CharField(max_length=200, null=True, blank=True)
+    pp_link = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return self.user.username

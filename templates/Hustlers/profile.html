@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'Core/base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="/media/{{ hustler_profile.profile_picture }}" class="img-thumbnail rounded-circle mb-3"
+                     alt="Profile Picture">
+                <h2>{{ hustler_profile.first_name }} {{ hustler_profile.last_name }}</h2>
+                <a href="{% url 'Hustlers:edit-profile' hustler_profile.user.pk %}"> Edit Profile</a>
+                <a href="{% url 'edit-settings' hustler_profile.user.pk %}"> Edit Settings</a>
+                <p>{{ hustler_profile.profession }} at {{ hustler_profile.establishment }}</p>
+                <p>{{ hustler_profile.bio|safe }}</p>
+            </div>
+            <div class="col-md-8">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

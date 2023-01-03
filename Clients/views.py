@@ -38,4 +38,3 @@ def edit_profile_view(request, pk):
         form = ClientProfileForm(instance=client_profile)
 
     return render(request, 'Clients/edit_profile.html', {'form': form})
-

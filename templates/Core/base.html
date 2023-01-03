@@ -39,12 +39,12 @@
                     {% if request.user|has_group:"Clients" %}
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page"
-                               href="{% url 'client:profile' user.pk %}">Profile</a>
+                               href="{% url 'Clients:profile' user.pk %}">Profile</a>
                         </li>
                     {% elif request.user|has_group:"Hustlers" %}
                         <li class="nav-item">
-                            <a class="nav-link disabled" aria-current="page"
-                               href="{% url 'hustler:profile' user.pk %}">Profile</a>
+                            <a class="nav-link active" aria-current="page"
+                               href="{% url 'Hustlers:profile' user.pk %}">Profile</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
