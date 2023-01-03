@@ -19,28 +19,23 @@ def create_profile_view(request):
     if request.method == 'POST':
         form = ClientProfileForm(request.POST, request.FILES)
         if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            profession = form.cleaned_data['profession']
-            establishment = form.cleaned_data['establishment']
-            birth_date = form.cleaned_data['birth_date']
-            profile_picture = form.cleaned_data['profile_picture']
-            bio = form.cleaned_data['bio']
-
-            # Create a new ClientProfile instance
-            client_profile = ClientProfile.objects.create(
-                user=request.user,
-                first_name=first_name,
-                last_name=last_name,
-                profession=profession,
-                establishment=establishment,
-                birth_date=birth_date,
-                profile_picture=profile_picture,
-                bio=bio,
-            )
-
-            return redirect('index')
+            form.save()
+            return redirect('client:profile', pk=request.user.pk)
     else:
         form = ClientProfileForm()
 
     return render(request, 'Clients/create_profile.html', {'form': form})
+
+
+def edit_profile_view(request, pk):
+    client_profile = get_object_or_404(ClientProfile, user_id=pk)
+    if request.method == 'POST':
+        form = ClientProfileForm(request.POST, request.FILES, instance=client_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('client:profile', pk=request.user.pk)
+    else:
+        form = ClientProfileForm(instance=client_profile)
+
+    return render(request, 'Clients/edit_profile.html', {'form': form})
+

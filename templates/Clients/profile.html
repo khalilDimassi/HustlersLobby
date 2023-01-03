@@ -1,40 +1,25 @@
 {% extends 'Core/base.html' %}
+{% load static %}
 
 {% block title %}
     Profile
 {% endblock %}
 
 {% block content %}
-    {#     Profile page with generic bootstrap layout and a form to update the client_profile's profile#}
-    <div class="container">
+    <div class="container mt-5">
         <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Profile</div>
-                    <div class="panel-body text-center">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <img src="{{ client_profile.profile_picture }}" class="img-responsive img-circle"
-                                     alt="Profile Picture">
-                            </div>
-                            <div class="col-md-8">
-                                <h3>{{ client_profile.first_name }} {{ client_profile.last_name }}</h3>
-                                <p>{{ client_profile.user.email }}</p>
-                                <p>{{ client_profile.phone_number }}</p>
-                                <p>{{ client_profile.profession }} at {{ client_profile.establishment }}</p>
-                                <p>{{ client_profile.bio }}</p>
-                                <p>{{ client_profile.user.date_joined }}</p>
-                                <p>{{ client_profile.user.last_login }}</p>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                </div>
+            <div class="col-md-4">
+                <img src="/media/{{ client_profile.profile_picture }}" class="img-thumbnail rounded-circle mb-3"
+                     alt="Profile Picture">
+                <h2>{{ client_profile.first_name }} {{ client_profile.last_name }}</h2>
+                <a href="{% url 'client:edit-profile' client_profile.user.pk %}"> Edit Profile</a>
+                <a href="{% url 'edit-settings' client_profile.user.pk %}"> Edit Settings</a>
+                <p>{{ client_profile.profession }} at {{ client_profile.establishment }}</p>
+                <p>{{ client_profile.bio|safe }}</p>
+            </div>
+            <div class="col-md-8">
             </div>
         </div>
     </div>
-
-
-
 
 {% endblock %}

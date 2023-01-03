@@ -1,8 +1,8 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth import logout
 from django.contrib.auth.models import Group
-from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 from .forms import *
@@ -62,8 +62,44 @@ def register_view(request):
                 user = authenticate(username=username, password=password)
                 login(request, user)
 
-                return redirect('index')
+                # Redirect to the user's profile page
+                if role == 'Clients':
+                    return redirect('client:profile', pk=user.pk)
+                elif role == 'Hustlers':
+                    return redirect('hustler:profile', pk=user.pk)
     else:
         form = RegistrationForm()
 
     return render(request, 'GeneralAuth/register.html', {'form': form})
+
+
+def edit_settings_view(request, pk):
+    user = User.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = EditSettingsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            user.username = form.cleaned_data['username']
+            user.email = form.cleaned_data['email']
+            user.save()
+            messages.success(request, 'Your settings have been successfully updated.')
+            return redirect('index')  # Redirect to the user's profile page
+    else:
+        form = EditSettingsForm(
+            initial={'username': user.username, 'email': user.email}, instance=request.user)
+    return render(request, 'GeneralAuth/edit_settings.html', {'form': form})
+
+
+def edit_password_view(request, pk):
+    user = User.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = EditPasswordForm(request.POST)  # A form bound to the POST DATA
+        if form.is_valid():
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            update_session_auth_hash(request, request.user)  # Important! Otherwise the user will be logged out
+            messages.success(request, 'Your password has been successfully updated.')
+
+            return redirect('index')
+    else:
+        form = EditPasswordForm()
+    return render(request, 'GeneralAuth/edit_password.html', {'form': form})
