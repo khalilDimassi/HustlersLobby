@@ -12,13 +12,15 @@
                 <img src="/media/{{ client_profile.profile_picture }}" class="img-thumbnail rounded-circle mb-3"
                      alt="Profile Picture">
                 <h2>{{ client_profile.first_name }} {{ client_profile.last_name }}</h2>
-                <a href="{% url 'client:edit-profile' user.pk %}"> Edit Profile</a>
-                <a href="{% url 'edit-settings' user.pk %}"> Edit Settings</a>
-                <a href="{% url 'delete-account' user.pk %}"> Delete Account </a>
+                {% if user.pk == client_profile.user %}
+                    <a href="{% url 'client:edit-profile' user.pk %}"> Edit Profile</a>
+                    <a href="{% url 'edit-settings' user.pk %}"> Edit Settings</a>
+                    <a href="{% url 'delete-account' user.pk %}"> Delete Account </a>
+                {% endif %}
                 <p>{{ client_profile.profession }} at {{ client_profile.establishment }}</p>
-                <p>{{ client_profile.bio|safe }}</p>
             </div>
             <div class="col-md-8">
+                {{ client_profile.bio|safe }}
             </div>
         </div>
     </div>

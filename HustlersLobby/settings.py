@@ -29,13 +29,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # Third Party Apps
-    'phonenumber_field',
-    'phonenumbers',
-    'ckeditor',
-    'crispy_forms',
-    'crispy_bootstrap5',
-
     # Local Apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third Party Apps
+    'ckeditor',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'jquery',
 
     # My Apps
     'CoreApp.apps.CoreappConfig',

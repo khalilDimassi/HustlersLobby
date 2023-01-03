@@ -16,6 +16,19 @@ urlpatterns = [
     # TODO: Post a job
     # path('post-job/', views.post_job_view, name='post-job'),
 
+    # TODO: edit a job
+    # path('edit-job/<int:pk>/', views.edit_job_view, name='edit-job'),
+
+    # TODO: delete a job
+    # path('delete-job/<int:pk>/', views.delete_job_view, name='delete-job'),
+
+    # TODO: view a job
+    # path('view-job/<int:pk>/', views.view_job_view, name='view-job'),
+
+    # TODO: view all jobs
+    # path('view-jobs/', views.view_jobs_view, name='view-jobs'),
+
+
     # TODO: Hire a hustler
     # path('hire-hustler/', views.hire_hustler_view, name='hire-hustler'),
 
