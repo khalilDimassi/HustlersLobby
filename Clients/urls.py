@@ -13,20 +13,12 @@ urlpatterns = [
     # TODO: Landing page
     # path('', views.landing_page_view, name='landing-page'),
 
-    # TODO: Post a job
-    # path('post-job/', views.post_job_view, name='post-job'),
-
-    # TODO: edit a job
-    # path('edit-job/<int:pk>/', views.edit_job_view, name='edit-job'),
-
-    # TODO: delete a job
-    # path('delete-job/<int:pk>/', views.delete_job_view, name='delete-job'),
-
-    # TODO: view a job
-    # path('view-job/<int:pk>/', views.view_job_view, name='view-job'),
-
-    # TODO: view all jobs
-    # path('view-jobs/', views.view_jobs_view, name='view-jobs'),
+    path('post-job/', views.post_job_view, name='post-job'),
+    path('edit-job/<int:pk>/', views.edit_job_view, name='edit-job'),
+    path('cancel-job/<int:pk>/', views.cancel_job_view, name='cancel-job'),
+    path('view-job/<int:pk>/', views.view_job_view, name='view-job'),
+    path('view-jobs/', views.view_jobs_view, name='view-jobs'),
+    path('view-client-jobs/<int:pk>/', views.view_client_jobs_view, name='view-client-jobs'),
 
 
     # TODO: Hire a hustler

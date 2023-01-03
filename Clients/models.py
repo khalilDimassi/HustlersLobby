@@ -36,6 +36,10 @@ class ClientJob(models.Model):
     budget = models.IntegerField()
     date_posted = models.DateTimeField(default=timezone.now)
     date_due = models.DateTimeField(null=True, blank=True)
+    date_completed = models.DateTimeField(null=True, blank=True)
+    is_completed = models.BooleanField(default=False)
+    is_paid = models.BooleanField(default=False)
+    is_available = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.title
+        return f'{self.client.user.username} - {self.title}'

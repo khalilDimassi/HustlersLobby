@@ -1,8 +1,7 @@
 from ckeditor.widgets import CKEditorWidget
 from django import forms
-from django.contrib.auth.models import User
 
-from Clients.models import ClientProfile
+from Clients.models import ClientProfile, ClientJob
 
 
 class ClientProfileForm(forms.ModelForm):
@@ -41,3 +40,28 @@ class ClientProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ClientProfileForm, self).__init__(*args, **kwargs)
         self.fields['bio'].widget = CKEditorWidget()
+
+
+class ClientJobForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ClientJobForm, self).__init__(*args, **kwargs)
+        self.fields['description'].widget = CKEditorWidget()
+
+        self.fields['title'].widget.attrs.update({'value': self.instance.title})
+
+    class Meta:
+        model = ClientJob
+        fields = [
+            'title', 'description', 'budget', 'date_due', 'is_available',
+        ]
+        labels = {
+            'title': 'Title', 'description': 'Description', 'budget': 'Budget', 'date_due': 'Deadline',
+            'is_available': 'Available',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'budget': forms.NumberInput(attrs={'class': 'form-control'}),
+            'date_due': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }

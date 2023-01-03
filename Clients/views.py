@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, get_object_or_404
 
-from Clients.forms import ClientProfileForm
-from Clients.models import ClientProfile
+from Clients.forms import ClientProfileForm, ClientJobForm
+from Clients.models import ClientProfile, ClientJob
 
 
+# Profile views
 def profile_view(request, pk):
     user = get_object_or_404(User, pk=pk)
     client_profiles = ClientProfile.objects.filter(user=user)
@@ -57,3 +58,66 @@ def edit_profile_view(request, pk):
         form = ClientProfileForm(instance=client_profile)
 
     return render(request, 'Clients/edit_profile.html', {'form': form})
+
+
+# Jobs views
+def view_jobs_view(request):
+    context = {
+        'jobs': ClientJob.objects.all()
+    }
+    return render(request, 'Clients/Jobs/view_jobs.html', context)
+
+
+def view_job_view(request, pk):
+    context = {
+        'job': ClientJob.objects.get(pk=pk)
+    }
+    return render(request, 'Clients/Jobs/view_job.html', context)
+
+
+def view_client_jobs_view(request, pk):
+    context = {
+        'jobs': ClientJob.objects.filter(client_id=pk)
+    }
+    return render(request, 'Clients/Jobs/view_jobs.html', context)
+
+
+def post_job_view(request):
+    if request.method == 'POST':
+        form = ClientJobForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            new_job = ClientJob.objects.create(
+                client_id=request.user.client_profile.pk,
+                title=form.cleaned_data['title'],
+                description=form.cleaned_data['description'],
+                budget=form.cleaned_data['budget'],
+            )
+            new_job.save()
+            return redirect('client:view-jobs')
+    else:
+        form = ClientJobForm()
+
+    return render(request, 'Clients/Jobs/post_job.html', {'form': form})
+
+
+def edit_job_view(request, pk):
+    job = get_object_or_404(ClientJob, pk=pk)
+    if request.method == 'POST':
+        form = ClientJobForm(request.POST, request.FILES, instance=job)
+
+        if form.is_valid():
+            form.save()
+            return redirect('client:view-job', pk=pk)
+    else:
+        form = ClientJobForm(instance=job)
+
+    return render(request, 'Clients/Jobs/edit_job.html', {'form': form})
+
+
+def cancel_job_view(request, pk):
+    job = get_object_or_404(ClientJob, pk=pk)
+    job.is_available = False
+    job.save()
+    return redirect('client:view-jobs')
+

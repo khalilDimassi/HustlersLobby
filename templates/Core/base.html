@@ -44,6 +44,10 @@
                             <a class="nav-link active" aria-current="page"
                                href="{% url 'Clients:profile' user.pk %}">Profile</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page"
+                               href="{% url 'Clients:post-job' %}">Post Job</a>
+                        </li>
                     {% elif request.user|has_group:"Hustlers" %}
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page"
@@ -59,7 +63,7 @@
                         <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Jobs</a>
+                        <a class="nav-link active" aria-current="page" href="{% url 'Clients:view-jobs' %}">Jobs</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Logout</a>
