@@ -15,9 +15,10 @@
                 <br>
                 <ul class="list-group list-group-horizontal-sm" title="buttons and shit">
                     {% if user.pk == client_profile.user.id %}
-                        <li class="list-group-item"><a class="btn btn-secondary"
-                                                       href="{% url 'client:edit-profile' user.pk %}"> Edit
-                            Profile</a></li>
+                        <li class="list-group-item">
+                            <a class="btn btn-secondary"
+                               href="{% url 'client:edit-profile' user.pk %}"> Edit Profile</a>
+                        </li>
                         <li class="list-group-item"><a class="btn btn-secondary"
                                                        href="{% url 'edit-settings' user.pk %}"> Edit Settings</a>
                         </li>

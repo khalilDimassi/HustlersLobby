@@ -10,8 +10,12 @@
         {% if jobs %}
             {% for job in jobs %}
                 <br>
-                <li><a href="{% url 'client:view-job' job.pk %}">{{ job.title }}</a> - from {{ job.date_posted }}
-                    to {{ job.date_due }} -
+                <li><a href="{% url 'client:view-job' job.pk %}">{{ job.title }}</a> -
+                    {% if job.date_due %}
+                        from {{ job.date_posted }} to {{ job.date_due }} -
+                    {% else %}
+                        posted on {{ job.date_posted.date }}
+                    {% endif %}
                     by: {{ job.client.first_name }} {{ job.client.last_name }}
                 </li>
                 {% if not job.is_available %}
