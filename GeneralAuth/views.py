@@ -103,3 +103,16 @@ def edit_password_view(request, pk):
     else:
         form = EditPasswordForm()
     return render(request, 'GeneralAuth/edit_password.html', {'form': form})
+
+
+def delete_account_view(request, pk):
+    user = User.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = DeleteAccountForm(request.POST)
+        if form.is_valid():
+            user.delete()
+            messages.success(request, 'Your account has been successfully deleted.')
+            return redirect('login')
+    else:
+        form = DeleteAccountForm()
+    return render(request, 'GeneralAuth/delete_account.html', {'form': form})

@@ -12,12 +12,17 @@
                 <img src="/media/{{ hustler_profile.profile_picture }}" class="img-thumbnail rounded-circle mb-3"
                      alt="Profile Picture">
                 <h2>{{ hustler_profile.first_name }} {{ hustler_profile.last_name }}</h2>
-                <a href="{% url 'Hustlers:edit-profile' hustler_profile.user.pk %}"> Edit Profile</a>
-                <a href="{% url 'edit-settings' hustler_profile.user.pk %}"> Edit Settings</a>
+                {% if user.pk == hustler_profile.user.pk %}
+                    <a href="{% url 'Hustlers:edit-profile' user.pk %}"> Edit Profile</a>
+                    <a href="{% url 'edit-settings' user.pk %}"> Edit Settings</a>
+                    <a href="{% url 'delete-account' user.pk %}"> Delete Account </a>
+                {% endif %}
                 <p>{{ hustler_profile.profession }} at {{ hustler_profile.establishment }}</p>
-                <p>{{ hustler_profile.bio|safe }}</p>
+                <p>joined at {{ hustler_profile.user.date_joined }}</p>
             </div>
             <div class="col-md-8">
+                <h3>Bio: </h3>
+                {{ hustler_profile.bio|safe }}
             </div>
         </div>
     </div>

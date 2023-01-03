@@ -88,3 +88,17 @@ class EditPasswordForm(forms.Form):
         user.set_password(self.cleaned_data['new_password'])
         user.save()
         return user
+
+
+class DeleteAccountForm(forms.Form):
+    password = forms.CharField(
+        label_suffix='',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ('password',)
+
+    def save(self, user):
+        user.delete()
+        return user

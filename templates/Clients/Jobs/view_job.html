@@ -1,0 +1,53 @@
+{% extends 'Core/base.html' %}
+{% load my_tags %}
+
+{% block title %}
+    {{ Job.client.first_name }} {{ Job.client.last_name }} - {{ Job.job_title }}
+{% endblock %}
+
+{% block content %}
+    <!-- Job details -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Job Details</h4>
+                    {% if user.pk == job.client.user.id %}
+                        {% if job.is_available %}
+                            <a href="{% url 'Clients:edit-job' job.id %}"
+                               class="btn btn-primary btn-sm float-right">Edit</a>
+                            <a href="{% url 'Clients:cancel-job' job.id %}"
+                               class="btn btn-primary btn-sm float-right">Cancel</a>
+                        {% endif %}
+                    {% elif request.user|has_group:"Hustlers" %}
+                        <a href="{% url 'Hustlers:job-apply' job.id %}"
+                           class="btn btn-primary btn-sm float-right">Apply</a>
+                    {% else %}
+
+                    {% endif %}
+                    <small class="text-muted">Submitted by: <a
+                            href="{% url 'client:profile' job.client.user.id %}">{{ job.client.first_name }} </a>
+                        at {{ job.date_posted }}</small>
+                </div>
+                <div class="card-body">
+                    <p> Job deadline: {{ job.date_due }}</p>
+                    <p> Job budget: {{ job.budget }}</p>
+                    <p> Job description: {{ job.description|safe }}</p>
+                </div>
+            </div>
+            <div>
+                {% if job.job_comment %}
+                    {% for comment in job.job_comment.all %}
+                        <div class="comment">
+                            <p>{{ comment.comment }}</p>
+                            <small>Commented by: {{ comment.user }} - </small>
+                            <small>Date: {{ comment.created_at }}</small>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    No comments yet
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
