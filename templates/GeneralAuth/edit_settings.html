@@ -1,0 +1,23 @@
+{% extends 'Core/base.html' %}
+
+{% block title %}
+    <title>
+        Edit Account Settings
+    </title>
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h1> Edit Account Settings:</h1>
+        <br/>
+        <br/>
+        <form method="post" enctype="multipart/form-data" class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary">Submit</button>
+            <a href="{% url 'edit-password' user.pk %}" class="btn btn-primary">Change Password</a>
+        </form>
+    {% else %}
+        <p>You're not allowed mate!</p>
+    {% endif %}
+{% endblock %}

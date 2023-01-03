@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,17 +29,27 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Third Party Apps
+    'phonenumber_field',
+    'phonenumbers',
+    'ckeditor',
+    'crispy_forms',
+    'crispy_bootstrap5',
+
+    # Local Apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'CoreApp.apps.CoreappConfig',
 
-    # Third Party Apps
-    'crispy_forms',
-    'crispy_bootstrap5',
+    # My Apps
+    'CoreApp.apps.CoreappConfig',
+    'GeneralAuth.apps.GeneralauthConfig',
+    'Clients.apps.ClientsConfig',
+    'Hustlers.apps.HustlersConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -120,13 +130,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+    os.path.join(BASE_DIR, 'static', 'css'),
+    os.path.join(BASE_DIR, 'static', 'images'),
+    os.path.join(BASE_DIR, 'static', 'js'),
 ]
 
 # Media Files
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -148,3 +161,4 @@ LOGOUT_REDIRECT_URL = 'login'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
