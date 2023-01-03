@@ -42,4 +42,14 @@ class ClientJob(models.Model):
     is_available = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'{self.client.user.username} - {self.title}'
+        return f'user: {self.client.user.username} - job: {self.title}'
+
+
+class JobComment(models.Model):
+    job = models.ForeignKey(ClientJob, on_delete=models.CASCADE, related_name='job_comment')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_job_comment')
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'comment {self.pk} - user: {self.user.username} - job: {self.job.title}'

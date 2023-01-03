@@ -35,6 +35,19 @@
                     <p> Job description: {{ job.description|safe }}</p>
                 </div>
             </div>
+            <div>
+                {% if job.job_comment %}
+                    {% for comment in job.job_comment.all %}
+                        <div class="comment">
+                            <p>{{ comment.comment }}</p>
+                            <small>Commented by: {{ comment.user }} - </small>
+                            <small>Date: {{ comment.created_at }}</small>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    No comments yet
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}
