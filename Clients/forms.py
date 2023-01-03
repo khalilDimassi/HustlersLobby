@@ -1,7 +1,6 @@
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib.auth.models import User
-from phonenumber_field.formfields import PhoneNumberField
 
 from Clients.models import ClientProfile
 
@@ -42,4 +41,3 @@ class ClientProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ClientProfileForm, self).__init__(*args, **kwargs)
         self.fields['bio'].widget = CKEditorWidget()
-

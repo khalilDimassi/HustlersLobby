@@ -19,7 +19,26 @@ def create_profile_view(request):
     if request.method == 'POST':
         form = ClientProfileForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            new_profile = ClientProfile.objects.create(
+                user_id=request.user.id,
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                profession=form.cleaned_data['profession'],
+                establishment=form.cleaned_data['establishment'],
+                birth_date=form.cleaned_data['birth_date'],
+                profile_picture=form.cleaned_data['profile_picture'],
+                bio=form.cleaned_data['bio'],
+                phone_number=form.cleaned_data['phone_number'],
+                fb_link=form.cleaned_data['fb_link'],
+                tw_link=form.cleaned_data['tw_link'],
+                gh_link=form.cleaned_data['gh_link'],
+                li_link=form.cleaned_data['li_link'],
+                ig_link=form.cleaned_data['ig_link'],
+                pi_link=form.cleaned_data['pi_link'],
+                pp_link=form.cleaned_data['pp_link'],
+            )
+            new_profile.save()
+            # form.save()
             return redirect('client:profile', pk=request.user.pk)
     else:
         form = ClientProfileForm()
