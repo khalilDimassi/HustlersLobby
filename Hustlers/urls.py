@@ -12,14 +12,10 @@ urlpatterns = [
     # TODO: Dashboard
     # path('dashboard/', views.dashboard_view, name='dashboard'),
 
-    # TODO: Available jobs
-    # path('available-jobs/', views.available_jobs_view, name='available-jobs'),
-
-    # TODO: Job details
-    # path('job-details/<int:pk>/', views.job_details_view, name='job-details'),
-
-    # TODO: Apply for job
-    # path('apply-for-job/<int:pk>/', views.apply_for_job_view, name='apply-for-job'),
+    path('available-jobs/', views.available_jobs_view, name='available-jobs'),
+    path('job-apply/<int:pk>/', views.job_apply_view, name='job-apply'),
+    path('applied-team/<int:pk>/', views.applied_team_view, name='applied-team'),
+    path('job-cancel/<int:pk>/', views.job_cancel_view, name='job-cancel'),
 
     # TODO: My jobs
     # path('my-jobs/', views.my_jobs_view, name='my-jobs'),

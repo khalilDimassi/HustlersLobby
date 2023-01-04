@@ -30,6 +30,7 @@ class ClientProfile(models.Model):
 
 class ClientJob(models.Model):
     client = models.ForeignKey(ClientProfile, on_delete=models.CASCADE, related_name='client_job')
+    hired_team = models.ManyToManyField('Hustlers.HustlerProfile', related_name='hired_team', blank=True)
 
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=2000)
@@ -37,6 +38,8 @@ class ClientJob(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     date_due = models.DateTimeField(null=True, blank=True)
     date_completed = models.DateTimeField(null=True, blank=True)
+
+    is_taken = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
     is_available = models.BooleanField(default=True)

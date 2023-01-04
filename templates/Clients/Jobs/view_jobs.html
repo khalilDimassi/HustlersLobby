@@ -19,7 +19,7 @@
                     by: {{ job.client.first_name }} {{ job.client.last_name }}
                 </li>
                 {% if not job.is_available %}
-                    <p>Job is not available</p>
+                    <small class="text-muted" >Job is not available</small>
                 {% endif %}
                 <hr>
             {% endfor %}

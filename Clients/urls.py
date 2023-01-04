@@ -23,6 +23,12 @@ urlpatterns = [
     path('view-jobs/', views.view_jobs_view, name='view-jobs'),
     path('view-client-jobs/<int:pk>/', views.view_client_jobs_view, name='view-client-jobs'),
 
+    # TODO: follow advancement of accepted jobs
+    # path('view-accepted-jobs/', views.view_accepted_jobs_view, name='view-accepted-jobs'),
+
+    # TODO : detailed advencement of accepted job
+    # path('view-accepted-job/<int:pk>/', views.view_accepted_job_view, name='view-accepted-job'),
+
     # TODO: Hire a hustler
     # path('hire-hustler/', views.hire_hustler_view, name='hire-hustler'),
 

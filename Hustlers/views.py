@@ -1,11 +1,19 @@
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, get_object_or_404
+from django.views import View
 
+from Clients.models import ClientJob
 from Hustlers.forms import HustlerProfileForm
 from Hustlers.models import HustlerProfile
 
 
 def profile_view(request, pk):
+    """
+    get profile
+    :param request: request
+    :param pk: profile id
+    :return: profile
+    """
     user = get_object_or_404(User, pk=pk)
     hustler_profiles = HustlerProfile.objects.filter(user=user)
     if not hustler_profiles.exists():
@@ -16,6 +24,11 @@ def profile_view(request, pk):
 
 
 def create_profile_view(request):
+    """
+    create profile
+    :param request: request
+    :return: create profile form
+    """
     if request.method == 'POST':
         form = HustlerProfileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -49,6 +62,12 @@ def create_profile_view(request):
 
 
 def edit_profile_view(request, pk):
+    """
+    edit profile
+    :param request: request
+    :param pk: profile id
+    :return: edit profile form
+    """
     hustler_profile = get_object_or_404(HustlerProfile, user_id=pk)
     if request.method == 'POST':
         form = HustlerProfileForm(request.POST, request.FILES, instance=hustler_profile)
@@ -59,3 +78,54 @@ def edit_profile_view(request, pk):
         form = HustlerProfileForm(instance=hustler_profile)
 
     return render(request, 'hustlers/edit_profile.html', {'form': form})
+
+
+def available_jobs_view(request):
+    """
+    get all jobs that are not assigned to any hustler
+    :param request:
+    :return: list of jobs that are available
+    """
+    jobs = HustlerProfile.objects.filter(is_available=True)
+    return render(request, 'Clients/Jobs/view_jobs.html', {'jobs': jobs})
+
+
+def job_apply_view(request, pk):
+    """
+    apply for a job
+    :param request:
+    :param pk: job id
+    :return: job details
+    """
+    job = ClientJob.objects.get(pk=pk)
+    job.is_taken = True
+    job.hired_team.add(request.user.hustler_profile)
+    job.save()
+    return render(request, 'Clients/Jobs/view_job.html', {'clientjob': job, 'pk': pk})
+
+
+def applied_team_view(request, pk):
+    """
+    Display the applied team for a specific job
+    :param request:
+    :param pk: job id
+    :return: applied team for the specific job
+    """
+    job = get_object_or_404(ClientJob, pk=pk)
+    applied_team = job.hired_team.all()  # Get the applied team for the specific job
+    return render(request, 'Clients/Jobs/applied_team.html', {'applied_team': applied_team, 'job': job, 'pk': pk})
+
+
+def job_cancel_view(request, pk):
+    """
+    Cancel a job
+    :param request:
+    :param pk: job id
+    :return: job details
+    """
+    job = ClientJob.objects.get(pk=pk)
+    if job.hired_team.count() == 1:
+        job.is_taken = False
+    job.hired_team.remove(request.user.hustler_profile)
+    job.save()
+    return render(request, 'Clients/Jobs/view_job.html', {'clientjob': job, 'pk': pk})
