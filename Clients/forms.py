@@ -1,7 +1,7 @@
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 
-from Clients.models import ClientProfile, ClientJob
+from Clients.models import ClientProfile, ClientJob, JobComment
 
 
 class ClientProfileForm(forms.ModelForm):
@@ -45,9 +45,7 @@ class ClientProfileForm(forms.ModelForm):
 class ClientJobForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ClientJobForm, self).__init__(*args, **kwargs)
-        self.fields['description'].widget = CKEditorWidget()
-
-        self.fields['title'].widget.attrs.update({'value': self.instance.title})
+        # self.fields['title'].widget.attrs.update({'value': self.instance.title})
 
     class Meta:
         model = ClientJob
@@ -59,9 +57,34 @@ class ClientJobForm(forms.ModelForm):
             'is_available': 'Available',
         }
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'budget': forms.NumberInput(attrs={'class': 'form-control'}),
-            'date_due': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'description': forms.Textarea(attrs={'rows': '3'}),
         }
+
+
+class JobCommentForm(forms.ModelForm):
+    class Meta:
+        model = JobComment
+        fields = [
+            'comment',
+        ]
+        labels = {
+            'comment': 'Add Comment  ',
+        }
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': '3', 'placeholder': 'Opinions, Ideas, Suggestions ... etc'}),
+        }
+
+
+class AddCommentForm(forms.ModelForm):
+    class Meta:
+        model = JobComment
+        fields = [
+            'comment',
+        ]
+        labels = {
+            'comment': 'Add Comment  ',
+        }
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': '3', 'placeholder': 'Opinions, Ideas, Suggestions ... etc'}),
+        }
+

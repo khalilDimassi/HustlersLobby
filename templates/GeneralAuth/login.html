@@ -1,4 +1,5 @@
 {% extends 'Core/base.html' %}
+{% load crispy_forms_filters %}
 
 {% block title %}
     Login
@@ -12,23 +13,11 @@
     <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
     <form method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="inputUsername">Username</label>
-            <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control"
-                   required autofocus autocomplete="username">
-        </div>
-        <div class="form-group">
-            <label for="inputPassword">Password</label>
-            <input type="password" name="password" id="inputPassword" class="form-control" required
-                   autocomplete="current-password">
-        </div>
-        <div class="form-check">
-            <input type="checkbox" name="remember_me" id="rememberMe" class="form-check-input">
-            <label for="rememberMe" class="form-check-label">Remember me</label>
-        </div>
+        {{ form|crispy}}
         <button class="btn btn-sm btn-primary" type="submit">
             Sign in
         </button>
+
     </form>
 
 

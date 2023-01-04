@@ -1,12 +1,20 @@
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, get_object_or_404
+from django.utils import timezone
+from django.views import generic
 
-from Clients.forms import ClientProfileForm, ClientJobForm
-from Clients.models import ClientProfile, ClientJob
+from Clients.forms import ClientProfileForm, ClientJobForm, AddCommentForm
+from Clients.models import ClientProfile, ClientJob, JobComment
 
 
 # Profile views
 def profile_view(request, pk):
+    """
+    View for the client profile
+    :param request: request object
+    :param pk: user id
+    :return: client profile
+    """
     user = get_object_or_404(User, pk=pk)
     client_profiles = ClientProfile.objects.filter(user=user)
     if not client_profiles.exists():
@@ -17,6 +25,11 @@ def profile_view(request, pk):
 
 
 def create_profile_view(request):
+    """
+    View for creating a client profile
+    :param request:  request object
+    :return:  client profile
+    """
     if request.method == 'POST':
         form = ClientProfileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -48,6 +61,12 @@ def create_profile_view(request):
 
 
 def edit_profile_view(request, pk):
+    """
+    View for editing a client profile
+    :param request:  request object
+    :param pk:  user id
+    :return: client profile
+    """
     client_profile = get_object_or_404(ClientProfile, user_id=pk)
     if request.method == 'POST':
         form = ClientProfileForm(request.POST, request.FILES, instance=client_profile)
@@ -62,20 +81,64 @@ def edit_profile_view(request, pk):
 
 # Jobs views
 def view_jobs_view(request):
+    """
+    View for viewing all jobs
+    :param request: request object
+    :return: all jobs
+    """
     context = {
         'jobs': ClientJob.objects.all()
     }
     return render(request, 'Clients/Jobs/view_jobs.html', context)
 
 
-def view_job_view(request, pk):
-    context = {
-        'job': ClientJob.objects.get(pk=pk)
-    }
-    return render(request, 'Clients/Jobs/view_job.html', context)
+class ViewJobView(generic.DetailView):
+    """
+    View for viewing a job details
+    """
+    model = ClientJob
+    template_name = 'Clients/Jobs/view_job.html'
+    form_class = AddCommentForm  # Add the form class
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewJobView, self).get_context_data(**kwargs)  # Get the default context data
+        context["form"] = self.form_class()  # Add the form to the context
+        return context
+
+    # commenting handler
+    def post(self, request, *args, **kwargs):
+        # Check if the request is for adding a new comment
+        if "add-comment" in request.POST:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.job = self.get_object()
+                comment.user = request.user
+                comment.save()
+                return redirect('Clients:view-job', pk=self.get_object().pk)
+
+        # or editing an existing comment
+        elif "edit-comment" in request.POST:
+            comment_id = request.POST.get("comment_id")
+            comment = get_object_or_404(JobComment, pk=comment_id)
+            form = self.form_class(request.POST, instance=comment)
+
+            if form.is_valid():
+                form.instance.edited_at = timezone.now()
+                form.instance.is_edited = True
+                form.save()
+                return redirect('Clients:view-job', pk=self.get_object().pk)
+
+        return redirect('Clients:view-job', pk=self.get_object().pk)
 
 
 def view_client_jobs_view(request, pk):
+    """
+    View for viewing all jobs posted by a client
+    :param request: request object
+    :param pk: client id
+    :return: all jobs posted by a client
+    """
     context = {
         'jobs': ClientJob.objects.filter(client_id=pk)
     }
@@ -83,6 +146,11 @@ def view_client_jobs_view(request, pk):
 
 
 def post_job_view(request):
+    """
+    View for posting a job
+    :param request: request object
+    :return: job details
+    """
     if request.method == 'POST':
         form = ClientJobForm(request.POST, request.FILES)
 
@@ -102,6 +170,12 @@ def post_job_view(request):
 
 
 def edit_job_view(request, pk):
+    """
+    View for editing a job
+    :param request: request object
+    :param pk: job id
+    :return: job details
+    """
     job = get_object_or_404(ClientJob, pk=pk)
     if request.method == 'POST':
         form = ClientJobForm(request.POST, request.FILES, instance=job)
@@ -116,8 +190,27 @@ def edit_job_view(request, pk):
 
 
 def cancel_job_view(request, pk):
+    """
+    View for cancelling a job
+    :param request: request object
+    :param pk: job id
+    :return: job details
+    """
     job = get_object_or_404(ClientJob, pk=pk)
     job.is_available = False
     job.save()
     return redirect('client:view-jobs')
 
+
+def accept_team_view(request, pk):
+    """
+    View for accepting a team assigned to a job
+    :param request: request object
+    :param pk: job id
+    :return: job details
+    """
+    job = get_object_or_404(ClientJob, pk=pk)
+    job.is_taken = True
+    job.is_available = False
+    job.save()
+    return redirect('client:view-job', pk=pk)

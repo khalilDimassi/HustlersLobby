@@ -1,0 +1,40 @@
+{% extends 'Core/base.html' %}
+{% load static %}
+
+{% block title %}{{ job.title }}{% endblock %}
+
+{% block content %}
+    <h1>Applied Team for Job: {{ job.title }}</h1>
+    {% if not user.client_profile %}
+        {% if not user.hustler_profile in job.applied_team.all %}
+            <a class="btn btn-secondary btn-sm" href="{% url 'Hustlers:job-apply' job.pk %}"> Apply to join </a>
+        {% else %}
+            <a class="btn btn-secondary btn-sm" href="{% url 'Hustlers:job-cancel' job.pk %}"> Cancel Application </a>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'Clients:accept-team' job.pk %}" class="btn btn-secondary btn-sm"> Accept Team </a>
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Skills</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hustler in job.applied_team.all %}
+                <tr>
+                    <td>{{ hustler.first_name }} {{ hustler.last_name }}</td>
+                    <td>{{ hustler.user.email }}</td>
+                    <td>{{ hustler.skills }}</td>
+                    <td>
+                        <a href="{% url 'Hustlers:profile' hustler.user.pk %}" class="btn btn-primary btn-sm">View Profile</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
