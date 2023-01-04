@@ -23,17 +23,17 @@
                             <small class="text-muted"> JOB UNAVAILABLE </small>
                         {% endif %}
                     {% elif request.user|has_group:"Hustlers" %}
-                        {% if not user.hustler_profile in clientjob.hired_team.all %}
+                        {% if not user.hustler_profile in clientjob.applied_team.all %}
                             <a href="{% url 'Hustlers:job-apply' clientjob.id %}"
                                class="btn btn-primary btn-sm float-right">Apply</a>
-                        {% endif %}
-                        {% if clientjob.is_taken %}
-                            <a href="{% url 'Hustlers:applied-team' clientjob.id %}"
-                               class="btn btn-primary btn-sm float-right">Applied Team</a>
                         {% endif %}
                     {% else %}
 
                     {% endif %}
+                        {% if clientjob.is_taken %}
+                            <a href="{% url 'Hustlers:applied-team' clientjob.id %}"
+                               class="btn btn-primary btn-sm float-right">Applied Team</a>
+                        {% endif %}
                     <small class="text-muted">Submitted by: <a
                             href="{% url 'Clients:profile' clientjob.client_id %}">{{ clientjob.client.first_name }} </a>
                         at {{ clientjob.date_posted }}</small>

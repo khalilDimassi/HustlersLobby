@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
@@ -202,3 +200,17 @@ def cancel_job_view(request, pk):
     job.is_available = False
     job.save()
     return redirect('client:view-jobs')
+
+
+def accept_team_view(request, pk):
+    """
+    View for accepting a team assigned to a job
+    :param request: request object
+    :param pk: job id
+    :return: job details
+    """
+    job = get_object_or_404(ClientJob, pk=pk)
+    job.is_taken = True
+    job.is_available = False
+    job.save()
+    return redirect('client:view-job', pk=pk)

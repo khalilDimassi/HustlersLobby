@@ -22,6 +22,8 @@ urlpatterns = [
     path('view-job/<int:pk>/', views.ViewJobView.as_view(), name='view-job'),
     path('view-jobs/', views.view_jobs_view, name='view-jobs'),
     path('view-client-jobs/<int:pk>/', views.view_client_jobs_view, name='view-client-jobs'),
+    path('accept-team/<int:pk>/', views.accept_team_view, name='accept-team'),
+
 
     # TODO: follow advancement of accepted jobs
     # path('view-accepted-jobs/', views.view_accepted_jobs_view, name='view-accepted-jobs'),

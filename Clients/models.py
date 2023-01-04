@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
+from Hustlers.models import HustlerProfile
+
 
 # Create your models here.
 class ClientProfile(models.Model):
@@ -30,7 +32,9 @@ class ClientProfile(models.Model):
 
 class ClientJob(models.Model):
     client = models.ForeignKey(ClientProfile, on_delete=models.CASCADE, related_name='client_job')
-    hired_team = models.ManyToManyField('Hustlers.HustlerProfile', related_name='hired_team', blank=True)
+    applied_team = models.ManyToManyField(HustlerProfile, related_name='applied_team', blank=True)
+    selected_team = models.ManyToManyField(HustlerProfile, related_name='selected_team', blank=True)
+    hired_team = models.ManyToManyField(HustlerProfile, related_name='hired_team', blank=True)
 
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=2000)

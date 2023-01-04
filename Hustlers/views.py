@@ -99,7 +99,7 @@ def job_apply_view(request, pk):
     """
     job = ClientJob.objects.get(pk=pk)
     job.is_taken = True
-    job.hired_team.add(request.user.hustler_profile)
+    job.applied_team.add(request.user.hustler_profile)
     job.save()
     return render(request, 'Clients/Jobs/view_job.html', {'clientjob': job, 'pk': pk})
 
@@ -112,7 +112,7 @@ def applied_team_view(request, pk):
     :return: applied team for the specific job
     """
     job = get_object_or_404(ClientJob, pk=pk)
-    applied_team = job.hired_team.all()  # Get the applied team for the specific job
+    applied_team = job.applied_team.all()  # Get the applied team for the specific job
     return render(request, 'Clients/Jobs/applied_team.html', {'applied_team': applied_team, 'job': job, 'pk': pk})
 
 
@@ -124,8 +124,8 @@ def job_cancel_view(request, pk):
     :return: job details
     """
     job = ClientJob.objects.get(pk=pk)
-    if job.hired_team.count() == 1:
+    if job.applied_team.count() == 1:
         job.is_taken = False
-    job.hired_team.remove(request.user.hustler_profile)
+    job.applied_team.remove(request.user.hustler_profile)
     job.save()
     return render(request, 'Clients/Jobs/view_job.html', {'clientjob': job, 'pk': pk})
