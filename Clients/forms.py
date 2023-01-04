@@ -73,3 +73,18 @@ class JobCommentForm(forms.ModelForm):
         widgets = {
             'comment': forms.Textarea(attrs={'rows': '3', 'placeholder': 'Opinions, Ideas, Suggestions ... etc'}),
         }
+
+
+class AddCommentForm(forms.ModelForm):
+    class Meta:
+        model = JobComment
+        fields = [
+            'comment',
+        ]
+        labels = {
+            'comment': 'Add Comment  ',
+        }
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': '3', 'placeholder': 'Opinions, Ideas, Suggestions ... etc'}),
+        }
+

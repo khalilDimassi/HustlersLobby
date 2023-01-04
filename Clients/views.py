@@ -1,8 +1,12 @@
+from pprint import pprint
+
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render, get_object_or_404
+from django.utils import timezone
+from django.views import generic
 
-from Clients.forms import ClientProfileForm, ClientJobForm, JobCommentForm
-from Clients.models import ClientProfile, ClientJob
+from Clients.forms import ClientProfileForm, ClientJobForm, AddCommentForm
+from Clients.models import ClientProfile, ClientJob, JobComment
 
 
 # Profile views
@@ -90,25 +94,44 @@ def view_jobs_view(request):
     return render(request, 'Clients/Jobs/view_jobs.html', context)
 
 
-def view_job_view(request, pk):
+class ViewJobView(generic.DetailView):
     """
-    View for viewing a job
-    :param request: request object
-    :param pk: job id
-    :return: job details
+    View for viewing a job details
     """
-    job = get_object_or_404(ClientJob, pk=pk)
-    if request.method == 'POST':
-        form = JobCommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.user = request.user
-            comment.job = job
-            comment.save()
-            return redirect('job_detail', pk=pk)
-    else:
-        form = JobCommentForm()
-    return render(request, 'Clients/Jobs/view_job.html', {'job': job, 'form': form})
+    model = ClientJob
+    template_name = 'Clients/Jobs/view_job.html'
+    form_class = AddCommentForm  # Add the form class
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewJobView, self).get_context_data(**kwargs)  # Get the default context data
+        context["form"] = self.form_class()  # Add the form to the context
+        return context
+
+    # commenting handler
+    def post(self, request, *args, **kwargs):
+        # Check if the request is for adding a new comment
+        if "add-comment" in request.POST:
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.job = self.get_object()
+                comment.user = request.user
+                comment.save()
+                return redirect('Clients:view-job', pk=self.get_object().pk)
+
+        # or editing an existing comment
+        elif "edit-comment" in request.POST:
+            comment_id = request.POST.get("comment_id")
+            comment = get_object_or_404(JobComment, pk=comment_id)
+            form = self.form_class(request.POST, instance=comment)
+
+            if form.is_valid():
+                form.instance.edited_at = timezone.now()
+                form.instance.is_edited = True
+                form.save()
+                return redirect('Clients:view-job', pk=self.get_object().pk)
+
+        return redirect('Clients:view-job', pk=self.get_object().pk)
 
 
 def view_client_jobs_view(request, pk):
@@ -179,4 +202,3 @@ def cancel_job_view(request, pk):
     job.is_available = False
     job.save()
     return redirect('client:view-jobs')
-

@@ -50,6 +50,8 @@ class JobComment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_job_comment')
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    is_edited = models.BooleanField(default=False)
+    edited_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'comment {self.pk} - user: {self.user.username} - job: {self.job.title}'

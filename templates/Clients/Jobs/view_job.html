@@ -3,7 +3,7 @@
 {% load my_tags %}
 
 {% block title %}
-    {{ Job.client.first_name }} {{ Job.client.last_name }} - {{ Job.job_title }}
+    {{ clientjob.client.first_name }} {{ clientjob.client.last_name }} - {{ clientjob.title }}
 {% endblock %}
 
 {% block content %}
@@ -12,60 +12,83 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Job Details</h4>
-                    {% if user.pk == job.client.user.id %}
-                        {% if job.is_available %}
-                            <a href="{% url 'Clients:edit-job' job.id %}"
+                    <h4 class="card-title">Job Details: {{ clientjob.title }}</h4>
+                    {% if user.pk == clientjob.client.user.id %}
+                        {% if clientjob.is_available %}
+                            <a href="{% url 'Clients:edit-job' clientjob.id %}"
                                class="btn btn-primary btn-sm float-right">Edit</a>
-                            <a href="{% url 'Clients:cancel-job' job.id %}"
+                            <a href="{% url 'Clients:cancel-job' clientjob.id %}"
                                class="btn btn-primary btn-sm float-right">Cancel</a>
+                        {% else %}
+                            <small class="text-muted"> JOB UNAVAILABLE </small>
                         {% endif %}
                     {% elif request.user|has_group:"Hustlers" %}
-                        <a href="{% url 'Hustlers:job-apply' job.id %}"
+                        <a href="{% url 'Hustlers:job-apply' clientjob.id %}"
                            class="btn btn-primary btn-sm float-right">Apply</a>
                     {% else %}
 
                     {% endif %}
-                    <small class="text-muted">Submitted by: <a
-                            href="{% url 'client:profile' job.client.user.id %}">{{ job.client.first_name }} </a>
-                        at {{ job.date_posted }}</small>
+                    {#                    <small class="text-muted">Submitted by: <a#}
+                    {#                            href="{% url 'Clients:profile:profile' clientjob.client_id %}">{{ clientjob.client.first_name }} </a>#}
+                    {#                        at {{ clientjob.date_posted }}</small>#}
                 </div>
                 <div class="card-body">
-                    <p> Job deadline: {{ job.date_due }}</p>
-                    <p> Job budget: {{ job.budget }}</p>
-                    <p> Job description: {{ job.description }}</p>
+                    <p> Job deadline: {{ clientjob.date_due }}</p>
+                    <p> Job budget: {{ clientjob.budget }}$</p>
+                    <p> Job description: {{ clientjob.description }}</p>
                 </div>
             </div>
-            <br>
-            <h3> Comments </h3>
+            <h3> Comment Section:</h3>
             <hr>
-            <div>
-                {% if job.job_comment.all %}
-                    {% for comment in job.job_comment.all %}
-                        <br>
-                        <div class="comment">
-                            <p>{{ comment.comment }}</p>
-                            <small>Commented by: {{ comment.user }} - </small>
-                            <small>Date: {{ comment.created_at }}</small>
+            <br/>
+            {% if not clientjob.job_comment.all %}
+                <p> No comments . . .</p>
+            {% else %}
+                {% for comment in clientjob.job_comment.all %}
+                    {% if user.id == comment.user.id %}
+                        <div id="invisible-to-visible-{{ forloop.counter }}" style="display:none;">
+                            <form method="POST" action="{% url 'Clients:view-job' pk=clientjob.id %}">
+                                {% csrf_token %}
+                                <textarea class="form-control" name="comment" required>{{ comment.comment }}</textarea>
+                                <input type="hidden" name="comment_id" value="{{ comment.pk }}">
+                                <button class="btn btn-sm btn-primary mt-2" type="submit" value="Submit"
+                                        name="edit-comment">
+                                    Save
+                                </button>
+                            </form>
                         </div>
-                        <hr>
-                    {% endfor %}
-                {% else %}
-                    <br>
-                    No comments yet
-                    <hr>
-                {% endif %}
-                <form method="post" class="form-row">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <input class="btn btn-secondary" type="submit" value="Comment">
-                </form>
-            </div>
-        </div>
-    </div>
+                    {% endif %}
+                    <div id="visible-to-invisible-{{ forloop.counter }}">
+                        {% if comment.is_edited %}
+                            <small class="text-muted">Last edited on {{ comment.edited_at }} -
+                                by {{ comment.user.client_profile.first_name }} </small>
+                        {% else %}
+                            <strong>{{ comment.created_at }} - by {{ comment.user.client_profile.first_name }} </strong>
+                        {% endif %}
+                        {% if user.id == comment.user.id %}
+                            <button class="btn btn-secondary btn-sm" id="toggle-visibility-{{ forloop.counter }}"
+                                    onclick="toggleVisibility(this.id)">Edit
+                            </button>
+                        {% endif %}
+                        <p> {{ comment.comment }} </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <br/><br/>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input class="btn btn-sm btn-secondary" type="submit" value="Submit" name="add-comment">
+            </form>
+            <br/><br/><br/>
 
-                <br>
-                <br>
-                <br>
-                <br>
+            <script>
+                function toggleVisibility(id) {
+                    var current_iteration = id.split("-")[2];
+                    document.getElementById('invisible-to-visible-' + current_iteration).style.display = 'block';
+                    document.getElementById('visible-to-invisible-' + current_iteration).style.display = 'none';
+                }
+            </script>
+
+            <br/><br/><br/>
 {% endblock %}
